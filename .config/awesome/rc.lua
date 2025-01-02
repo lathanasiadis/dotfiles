@@ -153,7 +153,7 @@ calpop = awful.popup {
     border_width = dpi(2),
     border_color = beautiful.blue,
     x = 1700,
-    y = 30,
+    y = 50,
     ontop = true,
     visible = false
 }
