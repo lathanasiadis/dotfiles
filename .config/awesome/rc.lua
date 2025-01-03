@@ -292,20 +292,54 @@ awful.screen.connect_for_each_screen(function(s)
         }
     }
 
-    -- Create a tasklist widget
-    s.mytasklist = awful.widget.tasklist {
-        screen  = s,
-        filter  = awful.widget.tasklist.filter.currenttags,
-        buttons = tasklist_buttons
+    -- Task
+    s.mytasklist_items = awful.widget.tasklist {
+        screen   = s,
+        filter   = awful.widget.tasklist.filter.currenttags,
+        buttons  = tasklist_buttons,
+        layout   = {
+            layout  = wibox.layout.fixed.horizontal,
+            spacing = 20,
+            spacing_widget = {
+                widget = wibox.container.place,
+                halign = "center",
+                valign = "center",
+                {
+                    widget = wibox.widget.separator,
+                    shape = gears.shape.circle,
+                    forced_width = 6,
+                    color = constants.lavender,
+                },
+            },
+        },
+        widget_template = {
+            layout = wibox.layout.align.vertical,
+            {
+                wibox.widget.base.make_widget(),
+                widget = wibox.container.background,
+                id = "background_role",
+                -- opacity = 0.75,
+                forced_height = 2
+            },
+            {
+                awful.widget.clienticon,
+                margins = 3,
+                widget  = wibox.container.margin
+            },
+            -- nil,
+        },
     }
 
-    s.mytasklist_wrapper = wibox.widget {
-        layout  = wibox.layout.ratio.horizontal,
-        wibox.widget.textbox(""),
-        s.mytasklist,
-        wibox.widget.textbox("")
+    s.mytasklist = wibox.widget {
+        widget = wibox.container.place,
+        halign = "center",
+        valign = "center",
+        {
+            widget = wibox.container.margin,
+            margins = 3,
+            s.mytasklist_items
+        }
     }
-    s.mytasklist_wrapper:ajust_ratio(2, 0.05, 0.9, 0.05)
 
     -- Create the wibox
     s.mywibox = awful.wibar {
@@ -325,8 +359,9 @@ awful.screen.connect_for_each_screen(function(s)
             s.mytaglist,
             s.mypromptbox,
         },
-        -- s.mytasklist_wrapper, -- Middle widget
-        s.mytasklist_wrapper,
+        -- Middle widget
+        -- s.mytasklist_wrapper,
+        s.mytasklist,
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
             spacing = 10,
@@ -737,9 +772,9 @@ end)
 beautiful.maximized_hide_border = true
 
 -- Enable sloppy focus, so that focus follows mouse.
-client.connect_signal("mouse::enter", function(c)
-    c:emit_signal("request::activate", "mouse_enter", {raise = false})
-end)
+-- client.connect_signal("mouse::enter", function(c)
+--     c:emit_signal("request::activate", "mouse_enter", {raise = false})
+-- end)
 
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)

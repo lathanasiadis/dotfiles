@@ -25,6 +25,8 @@ theme.border_width  = dpi(2)
 theme.border_normal = constants.overlay0
 theme.border_focus  = constants.teal
 
+theme.tasklist_bg_minimize = constants.overlay0
+
 -- There are other variable sets
 -- overriding the default one when
 -- defined, the sets are:
