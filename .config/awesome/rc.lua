@@ -24,7 +24,7 @@ require("awful.hotkeys_popup.keys")
 -- My modules
 sinkindicator = require("sound_indicator")
 bar_monitors = require("bar_monitors") 
-
+constants = require("constants")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -129,7 +129,7 @@ mykeyboardlayout = awful.widget.keyboardlayout()
 -- Create a textclock widget
 mytextclock = wibox.widget {
     widget = wibox.widget.textclock,
-    font = beautiful.font,    
+    font = constants.font,    
     -- format = "\u{f073} %d/%m/%y \u{f017} %H:%M",
     format = "<b>%H:%M</b>",
 }
@@ -148,10 +148,10 @@ calpop = awful.popup {
     widget = {
         widget = wibox.widget.calendar.month,
         date = os.date("*t"),
-        font = beautiful.font
+        font = constants.font
     },
     border_width = dpi(2),
-    border_color = beautiful.blue,
+    border_color = constants.blue,
     x = 1700,
     y = 50,
     ontop = true,
@@ -273,9 +273,6 @@ awful.screen.connect_for_each_screen(function(s)
         screen  = s,
         filter  = awful.widget.taglist.filter.all,
         buttons = taglist_buttons,
-        -- style    = {
-        --     shape  = gears.shape.rounded_bar,
-        -- },
         widget_template = {
             {
                 {
@@ -314,10 +311,8 @@ awful.screen.connect_for_each_screen(function(s)
     s.mywibox = awful.wibar {
         position = "top",
         screen = s,
-        border_color = beautiful.blue,
+        border_color = constants.blue,
         border_width = 2,
-        -- width = 1900,
-        -- shape  = gears.shape.rounded_rect
         margins = 9
     }
 

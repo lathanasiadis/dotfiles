@@ -2,12 +2,7 @@ local gears = require("gears")
 local awful = require("awful")
 local wibox = require("wibox")
 
-local cmd = [[bash -c '
-while true; do
-pactl get-default-sink
-sleep 1
-done
-']]
+local constants = require("constants")
 
 local sinks = {
     speakers = "alsa_output.pci-0000_00_1f.3.analog-stereo",
@@ -28,7 +23,7 @@ sinkindicator = awful.widget.watch("bash -c 'pactl get-default-sink'", 1,
         return
     end)
 
-sinkindicator.font = "RobotoMono Nerd Font Propo 14"
+sinkindicator.font = constants.iconfont
 
 sinkindicator:buttons(gears.table.join(
     sinkindicator:buttons(),

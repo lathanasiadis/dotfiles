@@ -1,18 +1,13 @@
 local awful = require("awful")
 local wibox = require("wibox")
-
 local naughty = require("naughty")
+
+local constants = require("constants")
 
 local TIMEOUT = 5
 
-local GREEN = "#a6d189"
-local YELLOW = "#E5C890"
-local RED = "#E78284"
-
 local THRES_1 = 60 -- after this, the bar monitor turns yellow
 local THRES_2 = 80 -- after this, the bar monitor turns red
-
-local FONT = "RobotoMono Nerd Font Propo 14"
 
 local CPU_USE_ICON = ""
 local TEMP_LOW_ICON = ""
@@ -41,16 +36,16 @@ local function widget_function(unit, compare_op, thresholds, icons)
         local template = "<span foreground=\"%s\"><b>%s %d%s</b></span>"
         local color, icon
         if compare_op(stat, thresholds[1]) then
-            color = GREEN
+            color = constants.green
             icon = icons[1]
         elseif compare_op(stat, thresholds[2]) then
-            color = YELLOW
+            color = constants.yellow
             icon = icons[2]
         else
-            color = RED
+            color = constants.red
             icon = icons[3]
         end
-        widget.font = FONT
+        widget.font = constants.iconfont
         widget.markup = template:format(color, icon, stat, unit)
     end
 end

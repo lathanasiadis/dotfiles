@@ -6,33 +6,24 @@ local gears = require("gears")
 local gfs = require("gears.filesystem")
 local themes_path = gfs.get_themes_dir()
 
+local constants = require("constants")
+
 local theme = {}
 
--- catppuccin frappe colors
-theme.blue = "#8CAAEE"
-theme.yellow = "#E5C890"
-theme.red = "#E78284"
-theme.gray = "#737994"
-theme.teal = "#99D1DB"
+theme.font = constants.font
 
-theme.font = "Roboto 14"
+theme.bg_normal     = constants.base
+theme.bg_focus      = constants.teal
+theme.bg_urgent     = constants.yellow
 
-theme.bg_normal     = "#303446"
-theme.bg_focus      = theme.teal
-theme.bg_urgent     = "#E5C890"
-theme.bg_minimize   = "#292C3C"
-theme.bg_systray    = theme.bg_normal
-
-theme.fg_normal     = theme.teal
-theme.fg_focus      = "#303446"
-theme.fg_urgent     = "#303446"
-theme.fg_minimize   = theme.teal
+theme.fg_normal     = constants.teal
+theme.fg_focus      = constants.base
+theme.fg_urgent     = constants.base
 
 theme.useless_gap   = dpi(1)
 theme.border_width  = dpi(2)
-theme.border_normal = theme.gray
-theme.border_focus  = theme.teal
-theme.border_marked = "#E5C890"
+theme.border_normal = constants.overlay0
+theme.border_focus  = constants.teal
 
 -- There are other variable sets
 -- overriding the default one when
@@ -69,8 +60,8 @@ local taglist_square_size = dpi(4)
 -- )
 -- theme.taglist_squares_unsel = gears.surface.load_from_shape(dpi(42), dpi(2), gears.shape.rectangle, theme.bg_focus)
 
-theme.taglist_fg_empty = theme.gray
-theme.taglist_font = "RobotoMono Nerd Font Propo 14"
+theme.taglist_fg_empty = constants.overlay0
+theme.taglist_font = constants.iconfont
 
 -- Variables set for theming notifications:
 -- notification_font
@@ -154,8 +145,8 @@ theme.awesome_icon = theme_assets.awesome_icon(
 theme.notification_max_width = dpi(600)
 theme.notification_max_height = dpi(150)
 theme.notification_shape = gears.shape.rounded_rect
-theme.notification_border_color = theme.blue
-theme.notification_font = "RobotoMono Nerd Font 13"
+theme.notification_border_color = constants.blue
+theme.notification_font = constants.monofont
 
 -- Help Popup theme
 
