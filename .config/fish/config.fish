@@ -14,6 +14,27 @@ function dotfiles --wraps git
     git --git-dir $HOME/.dotfiles --work-tree=$HOME $argv
 end
 
+function la --wraps eza
+    eza -a $argv
+end
+
+function ll --wraps eza
+    eza --long \
+        --group-directories-first \
+        --icons \
+        --no-user \
+        --no-permissions $argv
+end 
+
+function lla --wraps eza
+    eza --all \
+        --long \
+        --group-directories-first \
+        --icons \
+        --no-user \
+        --no-permissions $argv
+end
+
 if status is-interactive
     # Commands to run in interactive sessions can go here
 end
