@@ -1,0 +1,113 @@
+configuration {
+    modes: "drun,window";
+    show-icons: true;
+    icon-theme: "Papirus";
+    drun-match-fields: "name,keywords";
+    drun-display-format: "{name}";
+    sidebar-mode: true;
+    window-format: "{w} {c} {t}";
+    display-window: " Windows";
+    display-drun: "󰌧 Launch";
+    timeout {
+        action: "kb-cancel";
+        delay:  0;
+    }
+    filebrowser {
+        directories-first: true;
+        sorting-method:    "name";
+    }
+}
+
+* {
+    //catppuccin colors
+    rosewater: #f2d5cf;
+    flamingo: #eebebe;
+    pink: #f4b8e4;
+    mauve: #ca9ee6;
+    red: #e78284;
+    maroon: #ea999c;
+    peach: #ef9f76;
+    yellow: #e5c890;
+    green: #a6d189;
+    teal: #81c8be;
+    sky: #99d1db;
+    sapphire: #85c1dc;
+    blue: #8caaee;
+    lavender: #babbf1;
+    text: #c6d0f5;
+    subtext1: #b5bfe2;
+    subtext0: #a5adce;
+    overlay2: #949cbb;
+    overlay1: #838ba7;
+    overlay0: #737994;
+    surface2: #626880;
+    surface1: #51576d;
+    surface0: #414559;
+    base: #303446;
+    mantle: #292c3c;
+    crust: #232634;
+
+    // Font
+    font: "RobotoMono Nerd Font 14";
+
+    // Vars to be inherited
+    background: @base;
+    alternate-normal-background: @base;
+    foreground: @text;
+
+    selected-normal-background: @base;
+    selected-normal-foreground: @blue;
+}
+
+window {
+    border: 3px;
+    border-radius: 12px;
+    border-color: @blue;
+    width: 30%;
+}
+
+listview {
+    scrollbar: false;    
+    border: 2px dash 0px 2px dash;
+    columns: 1;
+    lines: 7; 
+}
+
+inputbar {
+    padding: 10px;
+    children: [ prompt, textbox-prompt-colon, entry ];
+}
+
+prompt, textbox-prompt-colon, entry {
+    padding: 5px;
+}
+prompt, textbox-prompt-colon {
+    text-color: @base;
+    background-color: @teal;
+}
+
+element, element-text, button {
+    padding: 5px;
+    highlight: bold;
+}
+// Center text w.r.t. icon
+element-text {
+    vertical-align: 0.5;
+}
+element-icon {
+    size: 3ch;
+}
+
+button {
+    background-color: @base;
+    text-color: @text;
+}
+button selected {
+    background-color: @base;
+    text-color: @blue;
+}
+
+// red text color for warnings
+textbox {
+    text-color: @red;
+}
