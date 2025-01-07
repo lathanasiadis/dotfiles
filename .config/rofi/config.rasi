@@ -5,6 +5,7 @@ configuration {
     drun-match-fields: "name,keywords";
     drun-display-format: "{name}";
     sidebar-mode: true;
+    combi-modes: "window,drun";
     window-format: "{w} {c} {t}";
     display-window: " Windows";
     display-drun: "󰌧 Launch";
@@ -55,7 +56,7 @@ configuration {
     alternate-normal-background: @base;
     foreground: @text;
 
-    selected-normal-background: @base;
+    selected-normal-background: @surface1;
     selected-normal-foreground: @blue;
 }
 
