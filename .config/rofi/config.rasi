@@ -7,6 +7,7 @@ configuration {
     sidebar-mode: true;
     combi-modes: "window,drun";
     window-format: "{w} {c} {t}";
+    display-combi: " Switch to";
     display-window: " Windows";
     display-drun: "󰌧 Launch";
     timeout {
@@ -52,19 +53,35 @@ configuration {
     font: "RobotoMono Nerd Font 14";
 
     // Vars to be inherited
-    background: @base;
-    alternate-normal-background: @base;
     foreground: @text;
+    background: @base;
 
-    selected-normal-background: @surface1;
     selected-normal-foreground: @blue;
+    selected-normal-background: @surface1;
+    
+    // Alternate = every second row
+    alternate-normal-foreground: @text;
+    alternate-normal-background: @base;
+
+    // Active: currently active window (for window switching)
+    active-foreground: @teal;
+    active-background: @base;
+
+    // Alternate Active: active window in current workspace, when the last
+    // focused window is in another. 
+    // In this config, I treat it as a normal entry
+    alternate-active-foreground: @text;
+    alternate-active-background: @base;
+
+    selected-active-foreground: @blue;
+    selected-active-background: @surface1;
 }
 
 window {
     border: 3px;
     border-radius: 12px;
     border-color: @blue;
-    width: 30%;
+    //width: 30%;
 }
 
 listview {
