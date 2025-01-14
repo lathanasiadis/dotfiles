@@ -93,6 +93,7 @@ listview {
 
 inputbar {
     padding: 10px;
+    // Explicitly name children to disable showing the amount of results
     children: [ prompt, textbox-prompt-colon, entry ];
 }
 
