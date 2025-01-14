@@ -21,6 +21,11 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
 
+local ruled = require("ruled")
+
+local lgi = require("lgi")
+local Gtk = lgi.require("Gtk", "3.0")
+
 -- My modules
 sinkindicator = require("sound_indicator")
 bar_monitors = require("bar_monitors") 
@@ -34,6 +39,7 @@ if awesome.startup_errors then
                      title = "Oops, there were errors during startup!",
                      text = awesome.startup_errors })
 end
+
 
 -- Handle runtime errors after startup
 do
@@ -711,7 +717,23 @@ awful.rules.rules = {
     { rule = { class = "qBittorrent" },
       properties = { tag = workspaces[7] } },
 }
+
+
 -- }}}
+
+local icon_size = dpi(32)
+local gtk_theme = Gtk.IconTheme.get_default()
+
+local function choose_icon_from_gtk_theme(icons_names)
+  local icon_info = gtk_theme:choose_icon(icons_names, icon_size, 0)
+  if icon_info then
+    local icon_path = icon_info:get_filename()
+    if icon_path then
+      return icon_path
+    end
+  end
+  return ""
+end
 
 -- {{{ Signals
 -- Signal function to execute when a new client appears.
@@ -719,13 +741,21 @@ client.connect_signal("manage", function (c)
     -- Set the windows at the slave,
     -- i.e. put it at the end of others instead of setting it master.
     -- if not awesome.startup then awful.client.setslave(c) end
-
     if awesome.startup
       and not c.size_hints.user_position
       and not c.size_hints.program_position then
         -- Prevent clients from being unreachable after screen count changes.
         awful.placement.no_offscreen(c)
     end
+
+    -- Set icons that respect system GTK theme
+    local icon_name = choose_icon_from_gtk_theme({
+        (c.class or ""):lower(),
+        (c.name or ""):lower(),
+        (c.title or ""):lower()
+    })
+    local new_icon = gears.surface(icon_name)
+    c.icon = new_icon._native
 end)
 
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
