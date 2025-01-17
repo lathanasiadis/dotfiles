@@ -62,21 +62,21 @@ end
 beautiful.init("/home/aris/.config/awesome/theme.lua")
 
 
-naughty.config.icon_formats = {"png", "svg"}
-naughty.config.icon_dirs = {
-    "/usr/share/icons/Papirus/32x32/apps/",
-    "/usr/share/icons/Papirus/32x32/devices/",
-    "/usr/share/icons/Papirus/32x32/status/",
-    "/usr/share/icons/Papirus/22x22/panel/",
-}
+-- naughty.config.icon_formats = {"png", "svg"}
+-- naughty.config.icon_dirs = {
+--     "/usr/share/icons/Papirus/32x32/apps/",
+--     "/usr/share/icons/Papirus/32x32/devices/",
+--     "/usr/share/icons/Papirus/32x32/status/",
+--     "/usr/share/icons/Papirus/22x22/panel/",
+-- }
 
-naughty.config.defaults["position"] = "bottom_right"
-naughty.config.defaults["border_width"] = dpi(3)
+-- naughty.config.defaults["position"] = "bottom_right"
+-- naughty.config.defaults["border_width"] = dpi(3)
 
-naughty.config.presets["critical"]["bg"] = beautiful.bg_normal
-naughty.config.presets["critical"]["fg"] = beautiful.red
-naughty.config.presets["critical"]["border_color"] = beautiful.red
-naughty.config.presets["critical"]["icon"] = "dialog-error"
+-- naughty.config.presets["critical"]["bg"] = beautiful.bg_normal
+-- naughty.config.presets["critical"]["fg"] = beautiful.red
+-- naughty.config.presets["critical"]["border_color"] = beautiful.red
+-- naughty.config.presets["critical"]["icon"] = "dialog-error"
 
 -- This is used later as the default terminal and editor to run.
 terminal = "kitty --session fish"
@@ -261,7 +261,7 @@ awful.screen.connect_for_each_screen(function(s)
     -- Each screen has its own tag table.
     -- Set preferred layout for each workspace
     local l = awful.layout.suit
-    local layout = {l.floating, l.tile, l.floating}
+    local layout = {l.floating, l.tile, l.tile, l.tile, l.tile}
     awful.tag(workspaces, s, layout)
 
     -- Create a promptbox for each screen
@@ -747,13 +747,15 @@ client.connect_signal("request::manage", function (c)
     end
 
     -- Set icons that respect system GTK theme
-    local icon_name = choose_icon_from_gtk_theme({
-        (c.class or ""):lower(),
-        (c.name or ""):lower(),
-        (c.title or ""):lower()
-    })
-    local new_icon = gears.surface(icon_name)
-    c.icon = new_icon._native
+    -- local icon_name = choose_icon_from_gtk_theme({
+    --     (c.class or ""):lower(),
+    --     (c.name or ""):lower(),
+    --     (c.title or ""):lower()
+    -- })
+
+    -- local new_icon = gears.surface(icon_name)
+    -- c.icon = new_icon._native
+
 end)
 
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
@@ -806,6 +808,47 @@ beautiful.maximized_hide_border = true
 
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+-- }}}
+
+
+-- local kittyicon = gears.surface(choose_icon_from_gtk_theme({"kitty"}))
+
+-- gears.timer{
+--     timeout = 1,
+--     call_now = true,
+--     autostart = true,
+--     callback = function()
+--         local cls = client.get()
+--         for i = 1, #cls do
+--             if cls[i].class == "kitty" then
+--                 cls[i].icon = kittyicon._native
+--             end
+--         end
+--     end
+-- }
+
+-- {{{ Notifications
+
+ruled.notification.connect_signal('request::rules', function()
+    -- All notifications will match this rule.
+    ruled.notification.append_rule {
+        rule       = { },
+        properties = {
+            screen = awful.screen.preferred,
+            position = "bottom_right",
+            implicit_timeout = 5,
+        }
+    }
+end)
+
+naughty.connect_signal("request::display", function(n)
+    if n.title ~= nil then
+        n.title = "<b>" .. n.title .. "</b>"
+    end
+
+    naughty.layout.box { notification = n }
+end)
+
 -- }}}
 
 -- Run programs on startup

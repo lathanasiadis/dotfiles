@@ -1,7 +1,7 @@
 local theme_assets = require("beautiful.theme_assets")
 local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
-
+local rnotification = require("ruled.notification")
 local gears = require("gears")
 local gfs = require("gears.filesystem")
 local themes_path = gfs.get_themes_dir()
@@ -142,11 +142,24 @@ theme.awesome_icon = theme_assets.awesome_icon(
 
 -- Notifs theme
 
-theme.notification_max_width = dpi(600)
-theme.notification_max_height = dpi(150)
-theme.notification_shape = gears.shape.rounded_rect
-theme.notification_border_color = constants.blue
-theme.notification_font = constants.monofont
+-- theme.notification_max_width = dpi(600)
+-- theme.notification_max_height = dpi(150)
+-- theme.notification_shape = gears.shape.rounded_rect
+-- theme.notification_border_color = constants.blue
+-- theme.notification_font = constants.monofont
+
+rnotification.connect_signal('request::rules', function()
+    -- All notifications will match this rule.
+    rnotification.append_rule {
+        rule       = { },
+        properties = {
+            width = dpi(400),
+            height = dpi(100),
+            icon_size = dpi(100),
+            font = constants.font,
+        }
+    }
+end)
 
 -- Help Popup theme
 
