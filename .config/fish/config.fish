@@ -35,6 +35,8 @@ function lla --wraps eza
         --no-permissions $argv
 end
 
+source ~/miniconda3/etc/fish/conf.d/conda.fish
+
 if status is-interactive
     # Commands to run in interactive sessions can go here
 end
