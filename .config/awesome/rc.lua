@@ -31,6 +31,7 @@ constants = require("constants")
 sinkindicator = require("sound_indicator")
 bar_monitors = require("bar_monitors") 
 mymainmenu = require("main_menu")
+vol_notifs = require("volume_notifications")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -363,46 +364,7 @@ root.buttons(gears.table.join(
 ))
 -- }}}
 
-_last_notif = nil
-_last_notif_time = 0
 
-function vol_str(volume)
-    local n_bars = math.floor(volume / 5)
-    return "┣" .. string.rep("━", n_bars) .. string.rep(" ", 20 - n_bars) .. "┫" .. " " .. volume
-end
-
-function vol_icon(volume)
-    local volume = tonumber(volume)
-    if volume < 25 then
-        return constants.status_icons_dir .. "notification-audio-volume-low.svg"
-    elseif volume < 75 then
-        return constants.status_icons_dir .. "notification-audio-volume-medium.svg"
-    else
-        return constants.status_icons_dir .. "notification-audio-volume-high.svg"
-    end
-end
-
-function volume_notif()
-    local muted_icon = constants.status_icons_dir .. "notification-audio-volume-muted.svg"
-    awful.spawn.easy_async("pamixer --get-mute", function(stdout)
-        local muted = stdout
-        awful.spawn.easy_async("pamixer --get-volume", function(stdout)
-            local curr_time = os.time()
-            if curr_time - _last_notif_time < constants.notif_timeout then
-                _last_notif.message = vol_str(stdout)
-                _last_notif.icon = muted == "true\n" and muted_icon or vol_icon(stdout) 
-                _last_notif_time = curr_time
-            else
-                _last_notif_time = curr_time
-                _last_notif = naughty.notification{
-                    message = vol_str(stdout),
-                    icon = _muted == "true\n" and muted_icon or vol_icon(stdout),
-                    font = constants.monofont,
-                }
-            end
-        end)
-    end)
-end
 
 -- {{{ Key bindings
 globalkeys = gears.table.join(
@@ -510,30 +472,30 @@ globalkeys = gears.table.join(
               {description = "lua execute prompt", group = "awesome"}),
     awful.key({}, "XF86AudioLowerVolume",
         function ()
-            awful.spawn("pamixer --decrease 2")
+            awful.spawn.easy_async("pamixer --decrease 2", function() end)
             volume_notif()
         end
     ),
     awful.key({}, "XF86AudioRaiseVolume",
         function ()
-            awful.spawn("pamixer --increase 2")
+            awful.spawn.easy_async("pamixer --increase 2", function() end)
             volume_notif()
         end
     ),
     awful.key({}, "XF86AudioMute",
               function ()
-                    awful.spawn("pamixer --toggle-mute")
+                    awful.spawn.easy_async("pamixer --toggle-mute", function() end)
                     volume_notif()
               end
     ),
     awful.key({}, "XF86MonBrightnessUp",
               function ()
-                  awful.spawn("xbacklight -inc 10")
+                  awful.spawn.easy_async("xbacklight -inc 10", function() end)
               end
     ),
     awful.key({}, "XF86MonBrightnessDown",
               function ()
-                  awful.spawn("xbacklight -dec 10")
+                  awful.spawn.easy_async("xbacklight -dec 10", function() end)
               end
     )
 )
