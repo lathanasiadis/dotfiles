@@ -27,9 +27,10 @@ local lgi = require("lgi")
 local Gtk = lgi.require("Gtk", "3.0")
 
 -- My modules
+constants = require("constants")
 sinkindicator = require("sound_indicator")
 bar_monitors = require("bar_monitors") 
-constants = require("constants")
+mymainmenu = require("main_menu")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -95,18 +96,6 @@ awful.layout.layouts = {
 -- }}}
 
 -- Menu
-
-mymainmenu = awful.menu({
-    {"Lock Screen", function () awful.spawn("lock-command") end},
-    {"Sleep", function ()
-        awful.spawn("lock-command")
-        awful.spawn("systemctl suspend")
-    end},
-    {"Restart Awesome", awesome.restart},
-    {"Quit Awesome", function () awesome.quit() end},
-    {"Reboot", function () awful.spawn("systemctl reboot") end},
-    {"Shutdown", function () awful.spawn("systemctl poweroff") end},
-})
 
 mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
                                      menu = mymainmenu })
