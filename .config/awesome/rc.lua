@@ -376,7 +376,6 @@ root.buttons(gears.table.join(
 
 _last_notif = nil
 _last_notif_time = 0
--- _muted = nil
 
 function vol_str(volume)
     local n_bars = math.floor(volume / 5)
@@ -402,13 +401,13 @@ function volume_notif()
             local curr_time = os.time()
             if curr_time - _last_notif_time < constants.notif_timeout then
                 _last_notif.message = vol_str(stdout)
-                _last_notif.icon = muted == "false\n" and vol_icon(stdout) or muted_icon
+                _last_notif.icon = muted == "true\n" and muted_icon or vol_icon(stdout) 
                 _last_notif_time = curr_time
             else
                 _last_notif_time = curr_time
                 _last_notif = naughty.notification{
                     message = vol_str(stdout),
-                    icon = _muted == "false\n" and vol_icon(stdout) or muted_icon,
+                    icon = _muted == "true\n" and muted_icon or vol_icon(stdout),
                     font = constants.monofont,
                 }
             end
