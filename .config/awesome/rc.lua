@@ -97,15 +97,15 @@ awful.layout.layouts = {
 -- Menu
 
 mymainmenu = awful.menu({
-    {"Lock Screen", function () awful.util.spawn("lock-command") end},
+    {"Lock Screen", function () awful.spawn("lock-command") end},
     {"Sleep", function ()
         awful.spawn("lock-command")
         awful.spawn("systemctl suspend")
     end},
     {"Restart Awesome", awesome.restart},
     {"Quit Awesome", function () awesome.quit() end},
-    {"Reboot", function () awful.util.spawn("systemctl reboot") end},
-    {"Shutdown", function () awful.util.spawn("systemctl poweroff") end},
+    {"Reboot", function () awful.spawn("systemctl reboot") end},
+    {"Shutdown", function () awful.spawn("systemctl poweroff") end},
 })
 
 mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
@@ -470,11 +470,11 @@ globalkeys = gears.table.join(
               {description = "quit awesome", group = "awesome"}),
     
     -- Screenshots
-    awful.key({ }, "Print", function () awful.util.spawn("flameshot gui") end,
+    awful.key({ }, "Print", function () awful.spawn("flameshot gui") end,
         {description = "screenshot (interactive)", group = "screen"}),
-    awful.key({ modkey, }, "Print", function () awful.util.spawn("flameshot full -p /home/aris/Pictures/Screenshots/") end,
+    awful.key({ modkey, }, "Print", function () awful.spawn("flameshot full -p /home/aris/Pictures/Screenshots/") end,
         {description = "screenshot (auto save full screen)", group = "screen"}),
-    awful.key({ modkey,}, "z", function () awful.util.spawn("/home/aris/Documents/bdocr/bdocr.sh") end,
+    awful.key({ modkey,}, "z", function () awful.spawn("/home/aris/Documents/bdocr/bdocr.sh") end,
     {description = "OCR a screenshot selection", group = "screen"}),
 
     awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)          end,
@@ -521,30 +521,30 @@ globalkeys = gears.table.join(
               {description = "lua execute prompt", group = "awesome"}),
     awful.key({}, "XF86AudioLowerVolume",
         function ()
-            awful.util.spawn("pamixer --decrease 2")
+            awful.spawn("pamixer --decrease 2")
             volume_notif()
         end
     ),
     awful.key({}, "XF86AudioRaiseVolume",
         function ()
-            awful.util.spawn("pamixer --increase 2")
+            awful.spawn("pamixer --increase 2")
             volume_notif()
         end
     ),
     awful.key({}, "XF86AudioMute",
               function ()
-                    awful.util.spawn("pamixer --toggle-mute")
+                    awful.spawn("pamixer --toggle-mute")
                     volume_notif()
               end
     ),
     awful.key({}, "XF86MonBrightnessUp",
               function ()
-                  awful.util.spawn("xbacklight -inc 10")
+                  awful.spawn("xbacklight -inc 10")
               end
     ),
     awful.key({}, "XF86MonBrightnessDown",
               function ()
-                  awful.util.spawn("xbacklight -dec 10")
+                  awful.spawn("xbacklight -dec 10")
               end
     )
 )
