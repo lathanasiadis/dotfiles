@@ -224,8 +224,7 @@ end
 screen.connect_signal("property::geometry", set_wallpaper)
 
 -- https://www.nerdfonts.com/cheat-sheet
-local workspaces = {"1", "2", "", "", "",
-                    "", ""}
+local workspaces = {"1", "2", "", "", "", "", ""}
 
 awful.screen.connect_for_each_screen(function(s)
     -- Wallpaper
@@ -234,7 +233,7 @@ awful.screen.connect_for_each_screen(function(s)
     -- Each screen has its own tag table.
     -- Set preferred layout for each workspace
     local l = awful.layout.suit
-    local layout = {l.floating, l.tile, l.tile, l.tile, l.tile}
+    local layout = {l.floating, l.tile, l.tile, l.floating, l.tile}
     awful.tag(workspaces, s, layout)
 
     -- Create a promptbox for each screen
@@ -472,31 +471,31 @@ globalkeys = gears.table.join(
               {description = "lua execute prompt", group = "awesome"}),
     awful.key({}, "XF86AudioLowerVolume",
         function ()
-            awful.spawn.easy_async("pamixer --decrease 2", function() end)
+            awful.spawn("pamixer --decrease 2", false)
             volume_notif()
         end
     ),
     awful.key({}, "XF86AudioRaiseVolume",
         function ()
-            awful.spawn.easy_async("pamixer --increase 2", function() end)
+            awful.spawn("pamixer --increase 2", false)
             volume_notif()
         end
     ),
     awful.key({}, "XF86AudioMute",
-              function ()
-                    awful.spawn.easy_async("pamixer --toggle-mute", function() end)
-                    volume_notif()
-              end
+        function ()
+            awful.spawn("pamixer --toggle-mute", false)
+            volume_notif()
+        end
     ),
     awful.key({}, "XF86MonBrightnessUp",
-              function ()
-                  awful.spawn.easy_async("xbacklight -inc 10", function() end)
-              end
+        function ()
+            awful.spawn("xbacklight -inc 10", false)
+        end
     ),
     awful.key({}, "XF86MonBrightnessDown",
-              function ()
-                  awful.spawn.easy_async("xbacklight -dec 10", function() end)
-              end
+        function ()
+            awful.spawn("xbacklight -dec 10", false)
+        end
     )
 )
 
@@ -811,4 +810,4 @@ end)
 -- }}}
 
 -- Run programs on startup
-awful.spawn.with_shell("~/.config/awesome/autorun.sh")
+awful.spawn.with_shell("/home/aris/.config/awesome/autorun.sh")
