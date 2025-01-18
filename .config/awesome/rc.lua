@@ -61,23 +61,6 @@ end
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init("/home/aris/.config/awesome/theme.lua")
 
-
--- naughty.config.icon_formats = {"png", "svg"}
--- naughty.config.icon_dirs = {
---     "/usr/share/icons/Papirus/32x32/apps/",
---     "/usr/share/icons/Papirus/32x32/devices/",
---     "/usr/share/icons/Papirus/32x32/status/",
---     "/usr/share/icons/Papirus/22x22/panel/",
--- }
-
--- naughty.config.defaults["position"] = "bottom_right"
--- naughty.config.defaults["border_width"] = dpi(3)
-
--- naughty.config.presets["critical"]["bg"] = beautiful.bg_normal
--- naughty.config.presets["critical"]["fg"] = beautiful.red
--- naughty.config.presets["critical"]["border_color"] = beautiful.red
--- naughty.config.presets["critical"]["icon"] = "dialog-error"
-
 -- This is used later as the default terminal and editor to run.
 terminal = "kitty --session fish"
 editor = os.getenv("EDITOR") or "vi"
@@ -391,14 +374,47 @@ root.buttons(gears.table.join(
 ))
 -- }}}
 
---local function audio_volume()
-  --  local vol
-    --awful.spawn.easy_async("bash -c pamixer --get-volume", function(stdout, stderr, reason, exit_code)
-      --  vol = stdout
-       -- naughty.notification {title = "audio_volume", text = vol1}
-   -- end)
-   -- return vol
---end
+_last_notif = nil
+_last_notif_time = 0
+-- _muted = nil
+
+function vol_str(volume)
+    local n_bars = math.floor(volume / 5)
+    return "┣" .. string.rep("━", n_bars) .. string.rep(" ", 20 - n_bars) .. "┫" .. " " .. volume
+end
+
+function vol_icon(volume)
+    local volume = tonumber(volume)
+    if volume < 25 then
+        return constants.status_icons_dir .. "notification-audio-volume-low.svg"
+    elseif volume < 75 then
+        return constants.status_icons_dir .. "notification-audio-volume-medium.svg"
+    else
+        return constants.status_icons_dir .. "notification-audio-volume-high.svg"
+    end
+end
+
+function volume_notif()
+    local muted_icon = constants.status_icons_dir .. "notification-audio-volume-muted.svg"
+    awful.spawn.easy_async("pamixer --get-mute", function(stdout)
+        local muted = stdout
+        awful.spawn.easy_async("pamixer --get-volume", function(stdout)
+            local curr_time = os.time()
+            if curr_time - _last_notif_time < constants.notif_timeout then
+                _last_notif.message = vol_str(stdout)
+                _last_notif.icon = muted == "false\n" and vol_icon(stdout) or muted_icon
+                _last_notif_time = curr_time
+            else
+                _last_notif_time = curr_time
+                _last_notif = naughty.notification{
+                    message = vol_str(stdout),
+                    icon = _muted == "false\n" and vol_icon(stdout) or muted_icon,
+                    font = constants.monofont,
+                }
+            end
+        end)
+    end)
+end
 
 -- {{{ Key bindings
 globalkeys = gears.table.join(
@@ -491,10 +507,6 @@ globalkeys = gears.table.join(
               end,
               {description = "restore minimized", group = "client"}),
 
-    -- Prompt
-    -- awful.key({ modkey },            "r",     function () awful.screen.focused().mypromptbox:run() end,
-    --           {description = "run prompt", group = "launcher"}),
-
     awful.key({ modkey },            "r",     function () os.execute("rofi -show combi") end,
           {description = "rofi", group = "launcher"}),
 
@@ -508,25 +520,22 @@ globalkeys = gears.table.join(
                   }
               end,
               {description = "lua execute prompt", group = "awesome"}),
-    
     awful.key({}, "XF86AudioLowerVolume",
-              function ()
-                  -- vol = audio_volume()
-                  -- naughty.notification {message = vol }
-                  awful.util.spawn("pamixer --decrease 2")
-                  awful.util.spawn("volume-notification")
-              end
+        function ()
+            awful.util.spawn("pamixer --decrease 2")
+            volume_notif()
+        end
     ),
     awful.key({}, "XF86AudioRaiseVolume",
-              function ()
-                  awful.util.spawn("pamixer --increase 2")
-                  awful.util.spawn("volume-notification")
-              end
+        function ()
+            awful.util.spawn("pamixer --increase 2")
+            volume_notif()
+        end
     ),
     awful.key({}, "XF86AudioMute",
               function ()
-                  awful.util.spawn("pamixer --toggle-mute")
-                  awful.util.spawn("volume-notification")
+                    awful.util.spawn("pamixer --toggle-mute")
+                    volume_notif()
               end
     ),
     awful.key({}, "XF86MonBrightnessUp",
@@ -836,7 +845,7 @@ ruled.notification.connect_signal('request::rules', function()
         properties = {
             screen = awful.screen.preferred,
             position = "bottom_right",
-            implicit_timeout = 5,
+            implicit_timeout = constants.notif_timeout,
         }
     }
 end)

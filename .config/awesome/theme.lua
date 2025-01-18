@@ -138,7 +138,7 @@ theme.awesome_icon = theme_assets.awesome_icon(
 -- Define the icon theme for application icons. If not set then the icons
 -- from /usr/share/icons and /usr/share/icons/hicolor will be used.
 -- (only for menubar)
--- theme.icon_theme = nil
+theme.icon_theme = "Papirus"
 
 -- Notifs theme
 
@@ -146,7 +146,7 @@ theme.awesome_icon = theme_assets.awesome_icon(
 -- theme.notification_max_height = dpi(150)
 -- theme.notification_shape = gears.shape.rounded_rect
 -- theme.notification_border_color = constants.blue
--- theme.notification_font = constants.monofont
+theme.notification_font = constants.font
 
 rnotification.connect_signal('request::rules', function()
     -- All notifications will match this rule.
@@ -156,7 +156,7 @@ rnotification.connect_signal('request::rules', function()
             width = dpi(400),
             height = dpi(100),
             icon_size = dpi(100),
-            font = constants.font,
+            -- font = constants.font,
         }
     }
 end)

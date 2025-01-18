@@ -29,7 +29,10 @@ local constants = {
     --
     font = "Roboto 14",
     monofont = "RobotoMono Nerd Font 14",
-    iconfont = "RobotoMono Nerd Font Propo 14"
+    iconfont = "RobotoMono Nerd Font Propo 14",
+    --
+    status_icons_dir = "/usr/share/icons/Papirus/48x48/status/",
+    notif_timeout = 5,
 }
 
 
