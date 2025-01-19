@@ -1,3 +1,5 @@
+local status_icons_dir = "/usr/share/icons/Papirus/48x48/status/"
+
 local constants = {
     -- catppuccin colors
     rosewater = "#f2d5cf",
@@ -31,9 +33,22 @@ local constants = {
     monofont = "RobotoMono Nerd Font 14",
     iconfont = "RobotoMono Nerd Font Propo 14",
     --
-    status_icons_dir = "/usr/share/icons/Papirus/48x48/status/",
     notif_timeout = 5,
     notif_app_name = "volume-notif",
+    icons = {
+        status_dir = status_icons_dir,
+        volume = {
+            muted = status_icons_dir .. "notification-audio-volume-muted.svg",
+            low = status_icons_dir .. "notification-audio-volume-low.svg",
+            medium = status_icons_dir .. "notification-audio-volume-medium.svg",
+            high = status_icons_dir .. "notification-audio-volume-high.svg"   
+        },
+        brightness = {
+            low = status_icons_dir .. "notification-display-brightness-low.svg",
+            medium = status_icons_dir .. "notification-display-brightness-medium.svg",
+            high = status_icons_dir .. "notification-display-brightness-full.svg"
+        }
+    }
 }
 
 

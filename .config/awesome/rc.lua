@@ -31,7 +31,7 @@ constants = require("constants")
 sinkindicator = require("sound_indicator")
 bar_monitors = require("bar_monitors") 
 mymainmenu = require("main_menu")
-vol_notifs = require("volume_notifications")
+snotifs = require("status_notifications")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -472,29 +472,31 @@ globalkeys = gears.table.join(
     awful.key({}, "XF86AudioLowerVolume",
         function ()
             awful.spawn("pamixer --decrease 2", false)
-            volume_notif()
+            snotifs.notif.volume()
         end
     ),
     awful.key({}, "XF86AudioRaiseVolume",
         function ()
             awful.spawn("pamixer --increase 2", false)
-            volume_notif()
+            snotifs.notif.volume()
         end
     ),
     awful.key({}, "XF86AudioMute",
         function ()
             awful.spawn("pamixer --toggle-mute", false)
-            volume_notif()
+            snotifs.notif.volume()
         end
     ),
     awful.key({}, "XF86MonBrightnessUp",
         function ()
-            awful.spawn("xbacklight -inc 10", false)
+            awful.spawn("xbacklight -inc 10 -time 1 -steps 1", false)
+            snotifs.notif.brightness()
         end
     ),
     awful.key({}, "XF86MonBrightnessDown",
         function ()
-            awful.spawn("xbacklight -dec 10", false)
+            awful.spawn("xbacklight -dec 10 -time 1 -steps 1", false)
+            snotifs.notif.brightness()
         end
     )
 )
@@ -802,7 +804,7 @@ end)
 naughty.connect_signal("request::display", function(n)
     local widget_template = nil
     if n.app_name == constants.notif_app_name then
-        widget_template = _volume_notif_template
+        widget_template = snotifs.template
     end
 
     if n.title ~= nil then
