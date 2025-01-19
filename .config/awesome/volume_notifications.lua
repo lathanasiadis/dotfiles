@@ -1,13 +1,40 @@
+local wibox = require("wibox")
 local awful = require("awful")
 local naughty = require("naughty")
+local beautiful = require("beautiful")
+local dpi = beautiful.xresources.apply_dpi
 local constants = require("constants")
 
-_last_notif = nil
-_last_notif_time = 0
+local _last_notif = nil
+local _last_notif_time = 0
+
+_volume_notif_template = {
+    widget = wibox.container.constraint,
+    width = dpi(400),
+    height = dpi(100), 
+    strategy = "max",
+    {
+        widget = naughty.container.background,
+        id = "background_role",
+        {
+            widget = wibox.container.margin,
+            margins = 10,
+            {
+                layout = wibox.layout.fixed.horizontal,
+                spacing = 1,
+                fill_space = false,
+                naughty.widget.icon,
+                naughty.widget.title,
+            }
+        }
+    }
+}
 
 function vol_str(volume)
-    local n_bars = math.floor(volume / 5)
-    return "┣" .. string.rep("━", n_bars) .. string.rep(" ", 20 - n_bars) .. "┫" .. " " .. volume
+    local n_bars = volume // 5
+    return "<b>┣" .. string.rep("━", n_bars) .. 
+        string.rep(" ", 20 - n_bars) .. "┫ "  ..
+        string.format("%3d", volume) .. "</b>"
 end
 
 function vol_icon(volume)
@@ -28,15 +55,16 @@ function volume_notif()
         awful.spawn.easy_async("pamixer --get-volume", function(stdout)
             local curr_time = os.time()
             if curr_time - _last_notif_time < constants.notif_timeout then
-                _last_notif.message = vol_str(stdout)
+                _last_notif.title = vol_str(stdout)
                 _last_notif.icon = muted == "true\n" and muted_icon or vol_icon(stdout) 
                 _last_notif_time = curr_time
             else
                 _last_notif_time = curr_time
                 _last_notif = naughty.notification{
-                    message = vol_str(stdout),
+                    title = vol_str(stdout),
                     icon = _muted == "true\n" and muted_icon or vol_icon(stdout),
                     font = constants.monofont,
+                    app_name = constants.notif_app_name,
                 }
             end
         end)

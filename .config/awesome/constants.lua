@@ -33,6 +33,7 @@ local constants = {
     --
     status_icons_dir = "/usr/share/icons/Papirus/48x48/status/",
     notif_timeout = 5,
+    notif_app_name = "volume-notif",
 }
 
 

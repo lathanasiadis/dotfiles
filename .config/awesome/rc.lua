@@ -800,11 +800,19 @@ ruled.notification.connect_signal('request::rules', function()
 end)
 
 naughty.connect_signal("request::display", function(n)
+    local widget_template = nil
+    if n.app_name == constants.notif_app_name then
+        widget_template = _volume_notif_template
+    end
+
     if n.title ~= nil then
         n.title = "<b>" .. n.title .. "</b>"
     end
 
-    naughty.layout.box { notification = n }
+    naughty.layout.box {
+        notification = n,
+        widget_template = widget_template
+    }
 end)
 
 -- }}}
