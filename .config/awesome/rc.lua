@@ -233,7 +233,7 @@ awful.screen.connect_for_each_screen(function(s)
     -- Each screen has its own tag table.
     -- Set preferred layout for each workspace
     local l = awful.layout.suit
-    local layout = {l.floating, l.tile, l.tile, l.floating, l.tile}
+    local layout = {l.floating, l.tile, l.tile, l.floating, l.tile, l.tile, l.tile}
     awful.tag(workspaces, s, layout)
 
     -- Create a promptbox for each screen
@@ -629,35 +629,9 @@ ruled.client.append_rule{
 
 -- Floating clients.
 ruled.client.append_rule{
-    rule_any = {
-        instance = {
-            "DTA",  -- Firefox addon DownThemAll.
-            "copyq",  -- Includes session name in class.
-            "pinentry",
-        },
-        class = {
-            "Arandr",
-            "Blueman-manager",
-            "Gpick",
-            "Kruler",
-            "MessageWin",  -- kalarm.
-            "Sxiv",
-            "Tor Browser", -- Needs a fixed window size to avoid fingerprinting by screen size.
-            "Wpa_gui",
-            "veromix",
-            "xtightvncviewer"
-        },
-        name = {
-            "Event Tester",  -- xev.
-        },
-        role = {
-            "AlarmWindow",  -- Thunderbird's calendar.
-            "ConfigManager",  -- Thunderbird's about:config.
-            "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
-        }
-    },
+    rule = { class = "Nemo" },
     properties = {
-        floating = true
+        placement = awful.placement.centered
     }
 }
 
@@ -669,7 +643,9 @@ ruled.client.append_rules {
       properties = { tag = workspaces[4] } },
     { rule = { name = "Tauon" },
       properties = { tag = workspaces[5] } },
-    { rule = { class = "thunderbird" },
+    { rule = { class = "Spotube" },
+      properties = { tag = workspaces[5] } },
+    { rule = { class = "net.thunderbird.Thunderbird" },
       properties = { tag = workspaces[6] } },
     { rule = { class = "qBittorrent" },
       properties = { tag = workspaces[7] } },
