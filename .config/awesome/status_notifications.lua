@@ -41,8 +41,17 @@ local function notif_icon(metric, type)
     end
 end
 
-function ret.notif.volume()
-    awful.spawn.easy_async("pamixer --get-mute", function(stdout)
+function ret.notif.volume(action)
+    local command
+    if action == "inc" then
+        command = "pamixer --increase 2"
+    elseif action == "dec" then
+        command = "pamixer --decrease 2"
+    else
+        command = "pamixer --toggle-mute"
+    end
+
+    awful.spawn.easy_async_with_shell(command .. " && pamixer --get-mute", function(stdout)
         local muted = stdout
         awful.spawn.easy_async("pamixer --get-volume", function(stdout)
             local curr_time = os.time()
@@ -56,15 +65,17 @@ function ret.notif.volume()
                     title = metric_str(stdout),
                     icon = _muted == "true\n" and constants.icons.volume.muted or notif_icon(stdout, "volume"),
                     font = constants.monofont,
-                    app_name = constants.notif_app_name,
+                    app_name = constants.snotif_app_name,
                 }
             end
         end)
     end)
 end
 
-function ret.notif.brightness()
-    awful.spawn.easy_async("xbacklight", function(stdout)
+function ret.notif.brightness(action)
+    -- action: inc or dec for increase/decrease
+    local command = "xbacklight -" .. action .. " 10 -time 1 -steps 1 && xbacklight" 
+    awful.spawn.easy_async_with_shell(command, function(stdout)
         local curr_time = os.time()
         if curr_time - last.brightness.t < constants.notif_timeout then
             last.brightness.n.title = metric_str(stdout)
@@ -76,7 +87,7 @@ function ret.notif.brightness()
                 title = metric_str(stdout),
                 icon = notif_icon(stdout, "brightness"),
                 font = constants.monofont,
-                app_name = constants.notif_app_name,
+                app_name = constants.snotif_app_name,
             }
         end
     end)

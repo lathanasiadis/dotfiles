@@ -34,7 +34,7 @@ local constants = {
     iconfont = "RobotoMono Nerd Font Propo 14",
     --
     notif_timeout = 5,
-    notif_app_name = "volume-notif",
+    snotif_app_name = "volume-notif",
     icons = {
         status_dir = status_icons_dir,
         volume = {

@@ -471,25 +471,22 @@ globalkeys = gears.table.join(
               {description = "lua execute prompt", group = "awesome"}),
     awful.key({}, "XF86AudioLowerVolume",
         function ()
-            awful.spawn("pamixer --decrease 2", false)
-            snotifs.notif.volume()
+            snotifs.notif.volume("dec")
         end
     ),
     awful.key({}, "XF86AudioRaiseVolume",
         function ()
-            awful.spawn("pamixer --increase 2", false)
-            snotifs.notif.volume()
+            snotifs.notif.volume("inc")
         end
     ),
     awful.key({}, "XF86AudioMute",
         function ()
-            awful.spawn("pamixer --toggle-mute", false)
-            snotifs.notif.volume()
+            snotifs.notif.volume("mute")
         end
     ),
     awful.key({}, "XF86MonBrightnessUp",
         function ()
-            awful.spawn("xbacklight -inc 10 -time 1 -steps 1", false)
+            awful.spawn("", false)
             snotifs.notif.brightness()
         end
     ),
@@ -803,7 +800,7 @@ end)
 
 naughty.connect_signal("request::display", function(n)
     local widget_template = nil
-    if n.app_name == constants.notif_app_name then
+    if n.app_name == constants.snotif_app_name then
         widget_template = snotifs.template
     end
 
