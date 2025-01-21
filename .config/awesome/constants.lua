@@ -48,6 +48,11 @@ local constants = {
             medium = status_icons_dir .. "notification-display-brightness-medium.svg",
             high = status_icons_dir .. "notification-display-brightness-full.svg"
         }
+    },
+    -- Add newline for easier string comparisons with programs' output
+    sinks = {
+        speakers = "alsa_output.pci-0000_00_1f.3.analog-stereo\n",
+        headphones = "alsa_output.usb-Kingston_HyperX_Virtual_Surround_Sound_00000000-00.analog-stereo\n"
     }
 }
 

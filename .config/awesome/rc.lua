@@ -28,7 +28,7 @@ local Gtk = lgi.require("Gtk", "3.0")
 
 -- My modules
 constants = require("constants")
-sinkindicator = require("sound_indicator")
+sinkindicator = require("sink_indicator")
 bar_monitors = require("bar_monitors") 
 mymainmenu = require("main_menu")
 snotifs = require("status_notifications")
@@ -631,6 +631,20 @@ ruled.client.append_rule{
 ruled.client.append_rule{
     rule = { class = "Nemo" },
     properties = {
+        height = 700,
+        width = 1200,
+        placement = awful.placement.centered
+    }
+}
+
+ruled.client.append_rule{
+    rule = {
+        class = "Gimp-3.0",
+        name = "Save Image",
+    },
+    properties = {
+        height = 700,
+        width = 1200,
         placement = awful.placement.centered
     }
 }
@@ -793,4 +807,5 @@ end)
 -- }}}
 
 -- Run programs on startup
+awful.spawn("pactl set-default-sink " .. constants.sinks.speakers, false)
 awful.spawn.with_shell("/home/aris/.config/awesome/autorun.sh")
