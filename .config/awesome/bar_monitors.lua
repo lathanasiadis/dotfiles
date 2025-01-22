@@ -28,7 +28,8 @@ local CPU_USE_CMD = "mpstat | awk '$13 ~ /[0-9.]+/ {print 100 - $13}' | cut -d'.
 -- divide total mem by used
 local MEM_USE_CMD = "free | grep Mem | awk '{print $3/$2 * 100.0}' | cut -d'.' -f 1"
 
-local BAT_CMD = "cat /sys/class/power_supply/BAT1/capacity"
+local BAT_FILE = "/sys/class/power_supply/BAT1/capacity"
+local BAT_CMD = "cat " .. BAT_FILE
 
 local function widget_function(unit, compare_op, thresholds, icons)
     return function (widget, stdout)
@@ -67,17 +68,40 @@ local cpu_use_monitor = awful.widget.watch({"bash", "-c", CPU_USE_CMD}, TIMEOUT,
 local mem_monitor = awful.widget.watch({"bash", "-c", MEM_USE_CMD}, TIMEOUT,
     widget_function("%", less_op, {THRES_1, THRES_2}, {MEM_USE_ICON, MEM_USE_ICON, MEM_USE_ICON}))
 
-local bat_monitor = awful.widget.watch({"bash", "-c", BAT_CMD}, TIMEOUT,
-    widget_function("%", gt_op, {40, 20}, {BAT_HIGH_ICON, BAT_MID_ICON, BAT_LOW_ICON}))
+local has_bat = nil
+local bat_monitor = nil
+-- This io call is blocking, but it only happens on startup, so it's ok
+f = io.open(BAT_FILE, "r")
+if f ~= nil then
+    io.close(f)
+    has_bat = true
+else
+    has_bat = false
+end
 
+if has_bat then
+    bat_monitor = awful.widget.watch({"bash", "-c", BAT_CMD}, TIMEOUT,
+        widget_function("%", gt_op, {40, 20}, {BAT_HIGH_ICON, BAT_MID_ICON, BAT_LOW_ICON}))
+end
 
-bar_monitors = wibox.widget {
-    layout = wibox.layout.fixed.horizontal,
-    spacing = 10,
-    cpu_temp_monitor,
-    cpu_use_monitor,
-    mem_monitor,
-    bat_monitor
-}
+local bar_monitors = nil
+if has_bat then
+    bar_monitors = wibox.widget {
+        layout = wibox.layout.fixed.horizontal,
+        spacing = 10,
+        cpu_temp_monitor,
+        cpu_use_monitor,
+        mem_monitor,
+        bat_monitor
+    }
+else
+    bar_monitors = wibox.widget {
+        layout = wibox.layout.fixed.horizontal,
+        spacing = 10,
+        cpu_temp_monitor,
+        cpu_use_monitor,
+        mem_monitor,
+    }
+end
 
 return bar_monitors

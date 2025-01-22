@@ -42,7 +42,6 @@ if awesome.startup_errors then
                      text = awesome.startup_errors })
 end
 
-
 -- Handle runtime errors after startup
 do
     local in_error = false
