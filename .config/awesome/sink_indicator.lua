@@ -1,7 +1,6 @@
 local gears = require("gears")
 local awful = require("awful")
 local wibox = require("wibox")
-local n = require("naughty")
 local constants = require("constants")
 local sinks = constants.sinks
 
@@ -21,14 +20,18 @@ ret = wibox.widget{
             if ret.text == sinkbuttons.speakers then
                 awful.spawn.easy_async(
                     "pactl set-default-sink " .. sinks.headphones,
-                    function()
-                        ret.text = sinkbuttons.headphones
+                    function(out, err, reason, code)
+                        if code == 0 then
+                            ret.text = sinkbuttons.headphones
+                        end
                     end)
             else
                 awful.spawn.easy_async(
                     "pactl set-default-sink " .. sinks.speakers,
-                    function()
-                        ret.text = sinkbuttons.speakers
+                    function(out, err, reason, code)
+                        if code == 0 then
+                            ret.text = sinkbuttons.speakers
+                        end
                     end)
             end
         end)
