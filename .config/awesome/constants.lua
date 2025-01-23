@@ -1,6 +1,8 @@
 local status_icons_dir = "/usr/share/icons/Papirus/48x48/status/"
 
 local constants = {
+    -- paths
+    theme_path = "/home/aris/.config/awesome/theme.lua",
     -- catppuccin colors
     rosewater = "#f2d5cf",
     flamingo = "#eebebe",

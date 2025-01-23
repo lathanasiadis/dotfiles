@@ -1,7 +1,8 @@
 local awful = require("awful")
 -- Need to init beautiful to return a themed menu
 local beautiful = require("beautiful")
-beautiful.init("/home/aris/.config/awesome/theme.lua")
+local constants = require("constants")
+beautiful.init(constants.theme_path)
 
 return awful.menu{
     {"Lock Screen", function () awful.spawn("lock-command", false) end},
