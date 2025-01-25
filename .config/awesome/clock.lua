@@ -3,7 +3,9 @@ local wibox = require("wibox")
 local gears = require("gears")
 local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
+local widget_template = require("monitors").template
 local constants = require("constants")
+
 
 local curr_date = os.date("*t")
 local curr_day = curr_date["day"]
@@ -12,11 +14,12 @@ local curr_year = curr_date["year"]
 local orig_month = curr_date["month"]
 local orig_year = curr_date["year"]
 
-local textclock = wibox.widget {
-    widget = wibox.widget.textclock,
-    font = constants.font,    
-    format = "<b>%H:%M</b>",
-}
+local textclock = widget_template(constants.overlay1, constants.iconfont, _,
+    wibox.widget {
+        widget = wibox.widget.textclock,
+        format = "<b> %H:%M</b>",
+    }
+)
 
 local calpop = awful.popup {
     widget = {

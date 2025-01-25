@@ -78,16 +78,10 @@ screen.connect_signal("request::wallpaper", function(s)
     awful.wallpaper {
         screen = s,
         widget = {
-            {
                 image     = beautiful.wallpaper,
-                upscale   = true,
-                downscale = true,
+                horizontal_fit_policy = "fit",
+                vertical_fit_policy   = "fit",
                 widget    = wibox.widget.imagebox,
-            },
-            valign = "center",
-            halign = "center",
-            tiled  = false,
-            widget = wibox.container.tile,
         }
     }
 end)
@@ -104,7 +98,10 @@ mytextclock = require("clock")
 local workspaces = {"1", "2", "", "", "", "", ""}
 screen.connect_signal("request::desktop_decoration", function(s)
     -- Each screen has its own tag table.
-    awful.tag(workspaces, s, awful.layout.layouts[1])
+    -- Set preferred layout for each workspace
+    local l = awful.layout.suit
+    local layout = {l.floating, l.tile, l.tile, l.floating, l.tile, l.tile, l.tile}
+    awful.tag(workspaces, s, layout)
 
     -- Create an imagebox widget which will contain an icon indicating which layout we're using.
     -- We need one layoutbox per screen.
@@ -206,6 +203,14 @@ screen.connect_signal("request::desktop_decoration", function(s)
         }
     }
 
+    s.right_bar = {mykeyboardlayout, sinkindicator}
+    for _, val in ipairs(bar_monitors) do
+        table.insert(s.right_bar, val)
+    end
+    table.insert(s.right_bar, mytextclock)
+    table.insert(s.right_bar, wibox.widget.systray())
+    table.insert(s.right_bar, s.mylayoutbox)
+
     -- Create the wibox
     s.mywibox = awful.wibar {
         position = "top",
@@ -223,13 +228,8 @@ screen.connect_signal("request::desktop_decoration", function(s)
             s.mytasklist, -- Middle widget
             { -- Right widgets
                 layout = wibox.layout.fixed.horizontal,
-                spacing = 10,
-                mykeyboardlayout,
-                sinkindicator,
-                bar_monitors,
-                mytextclock,
-                wibox.widget.systray(),
-                s.mylayoutbox,
+                spacing = 5,
+                table.unpack(s.right_bar),
             },
         }
     }

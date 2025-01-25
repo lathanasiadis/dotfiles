@@ -3,8 +3,7 @@ local wibox = require("wibox")
 local naughty = require("naughty")
 
 local constants = require("constants")
-
-local TIMEOUT = 5
+local monitor = require("monitors").widget
 
 local THRES_1 = 60 -- after this, the bar monitor turns yellow
 local THRES_2 = 80 -- after this, the bar monitor turns red
@@ -59,19 +58,19 @@ local function gt_op(x, y)
     return x>= y
 end
 
-local cpu_temp_monitor = awful.widget.watch({"bash", "-c", CPU_TEMP_CMD}, TIMEOUT,
-    widget_function("°C", less_op, {THRES_1, THRES_2}, {TEMP_LOW_ICON, TEMP_MID_ICON, TEMP_HIGH_ICON}))
+local cpu_temp = monitor(CPU_TEMP_CMD, 5, "°C",
+    less_op, {THRES_1, THRES_2}, {TEMP_LOW_ICON, TEMP_MID_ICON, TEMP_HIGH_ICON})
+local cpu_use = monitor(CPU_USE_CMD, 10, "%",
+    less_op, {THRES_1, THRES_2}, {CPU_USE_ICON, CPU_USE_ICON, CPU_USE_ICON})
+local mem = monitor(MEM_USE_CMD, 10, "%",
+    less_op, {THRES_1, THRES_2}, {MEM_USE_ICON, MEM_USE_ICON, MEM_USE_ICON})
 
-local cpu_use_monitor = awful.widget.watch({"bash", "-c", CPU_USE_CMD}, TIMEOUT,
-    widget_function("%", less_op, {THRES_1, THRES_2}, {CPU_USE_ICON, CPU_USE_ICON, CPU_USE_ICON}))
-
-local mem_monitor = awful.widget.watch({"bash", "-c", MEM_USE_CMD}, TIMEOUT,
-    widget_function("%", less_op, {THRES_1, THRES_2}, {MEM_USE_ICON, MEM_USE_ICON, MEM_USE_ICON}))
+local ret = {cpu_temp, cpu_use, mem}
 
 local has_bat = nil
 local bat_monitor = nil
 -- This io call is blocking, but it only happens on startup, so it's ok
-f = io.open(BAT_FILE, "r")
+local f = io.open(BAT_FILE, "r")
 if f ~= nil then
     io.close(f)
     has_bat = true
@@ -80,28 +79,8 @@ else
 end
 
 if has_bat then
-    bat_monitor = awful.widget.watch({"bash", "-c", BAT_CMD}, TIMEOUT,
-        widget_function("%", gt_op, {40, 20}, {BAT_HIGH_ICON, BAT_MID_ICON, BAT_LOW_ICON}))
+    table.insert(ret, monitor(BAT_CMD, 10, "%",
+        gt_op, {40, 20}, {BAT_HIGH_ICON, BAT_MID_ICON, BAT_LOW_ICON}))
 end
 
-local bar_monitors = nil
-if has_bat then
-    bar_monitors = wibox.widget {
-        layout = wibox.layout.fixed.horizontal,
-        spacing = 10,
-        cpu_temp_monitor,
-        cpu_use_monitor,
-        mem_monitor,
-        bat_monitor
-    }
-else
-    bar_monitors = wibox.widget {
-        layout = wibox.layout.fixed.horizontal,
-        spacing = 10,
-        cpu_temp_monitor,
-        cpu_use_monitor,
-        mem_monitor,
-    }
-end
-
-return bar_monitors
+return ret
