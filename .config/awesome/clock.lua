@@ -3,9 +3,8 @@ local wibox = require("wibox")
 local gears = require("gears")
 local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
-local widget_template = require("monitors").template
+local bar_widget = require("bar_widgets").widget
 local constants = require("constants")
-
 
 local curr_date = os.date("*t")
 local curr_day = curr_date["day"]
@@ -14,10 +13,19 @@ local curr_year = curr_date["year"]
 local orig_month = curr_date["month"]
 local orig_year = curr_date["year"]
 
-local textclock = widget_template(constants.overlay1, constants.iconfont, _,
+local M = {}
+
+M.clock = bar_widget(constants.lavender, constants.iconfont, _,
     wibox.widget {
         widget = wibox.widget.textclock,
-        format = "<b> %H:%M</b>",
+        format = "<span foreground='" .. constants.base .. "'><b> %H:%M</b></span>",
+    }
+)
+
+M.calendar = bar_widget(constants.mauve, constants.iconfont, _,
+    wibox.widget {
+        widget = wibox.widget.textclock,
+        format = "<span foreground='" .. constants.base .. "'><b> %d/%m/%y</b></span>",
     }
 )
 
@@ -35,7 +43,7 @@ local calpop = awful.popup {
     visible = false
 }
 
-textclock:buttons(gears.table.join(
+M.calendar:buttons(gears.table.join(
     awful.button({ }, 1, function ()
         if calpop.visible then
             calpop.visible = false
@@ -76,4 +84,4 @@ textclock:buttons(gears.table.join(
         end
     end)))
 
-return textclock
+return M

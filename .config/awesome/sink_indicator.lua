@@ -2,19 +2,20 @@ local gears = require("gears")
 local awful = require("awful")
 local wibox = require("wibox")
 local constants = require("constants")
-local widget_template = require("monitors").template
+local bar_widget = require("bar_widgets").widget
+local bar_template = require("bar_widgets").str_template
 local sinks = constants.sinks
 local naughty = require("naughty")
+
 local sinkbuttons = {
     speakers = "",
     headphones = ""
 }
 
-local template = "<span foreground=\"%s\"><b>%s</b></span>"
-
 local curr_sink
 local ret
-ret = widget_template(constants.overlay2, constants.iconfont, sinkbuttons.speakers)
+ret = bar_widget(constants.sapphire, constants.iconfont,
+    bar_template:format(sinkbuttons.speakers))
 ret.buttons = {
     awful.button({}, 1, nil, function()
         ret:emit_signal("sinks::change")
@@ -27,7 +28,7 @@ ret:connect_signal("sinks::change", function (c)
             "pactl set-default-sink " .. sinks.headphones,
             function(out, err, reason, code)
                 if code == 0 then
-                    text_widget.text = sinkbuttons.headphones
+                    text_widget.markup = bar_template:format(sinkbuttons.headphones)
                 end
             end)
     else
@@ -35,7 +36,7 @@ ret:connect_signal("sinks::change", function (c)
             "pactl set-default-sink " .. sinks.speakers,
             function(out, err, reason, code)
                 if code == 0 then
-                    text_widget.text = sinkbuttons.speakers
+                    text_widget.markup = bar_template:format(sinkbuttons.speakers)
                 end
             end)
     end

@@ -18,8 +18,8 @@ local constants = require("constants")
 local mymainmenu = require("main_menu")
 local snotifs = require("status_notifications")
 local sinkindicator = require("sink_indicator")
-local bar_monitors = require("bar_monitors") 
-
+local bar_monitors = require("bar_monitors")
+local bar_rect = require("bar_widgets").rect
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -91,9 +91,13 @@ end)
 
 -- Keyboard map indicator and switcher
 mykeyboardlayout = awful.widget.keyboardlayout()
+-- mykeyboardlayout = bar_template(constants.lavender, constants.iconfont, _, 
+--     awful.widget.keyboardlayout())
 
 -- Create a textclock widget
-mytextclock = require("clock")
+local datetime_stuff = require("clock") 
+local mytextclock = datetime_stuff.clock
+local mycalendar = datetime_stuff.calendar
 
 local workspaces = {"1", "2", "", "", "", "", ""}
 screen.connect_signal("request::desktop_decoration", function(s)
@@ -132,21 +136,21 @@ screen.connect_signal("request::desktop_decoration", function(s)
                                         end),
         },
         widget_template = {
+            widget = wibox.container.background,
+            forced_width = 40,
+            shape = bar_rect(),
             {
+                id = "background_role",
+                widget = wibox.container.background,
                 {
+                    widget = wibox.container.place,
+                    halign = true,
                     {
                         id = "text_role",
                         widget = wibox.widget.textbox,
-                    },
-                    widget = wibox.container.place,
-                },
-                id = "background_role",
-                forced_width = 40,
-                widget = wibox.container.background
-            },
-            widget = wibox.container.margin,
-            left = 5,
-            right = 5,
+                    }
+                }
+            }
         }
     }
 
@@ -175,63 +179,93 @@ screen.connect_signal("request::desktop_decoration", function(s)
             },
         },
         widget_template = {
-            layout = wibox.layout.align.vertical,
-            {
-                wibox.widget.base.make_widget(),
-                widget = wibox.container.background,
-                id = "background_role",
-                -- opacity = 0.75,
-                forced_height = 2
-            },
-            {
-                awful.widget.clienticon,
-                margins = 3,
-                widget  = wibox.container.margin
-            },
-            -- nil,
+            widget = wibox.container.margin,
+            margins = 3,
+            awful.widget.clienticon
         },
     }
 
     s.mytasklist = wibox.widget {
-        widget = wibox.container.place,
-        halign = "center",
-        valign = "center",
+        widget = wibox.container.background,
+        bg = constants.base,
+        border_color = constants.blue,
+        border_width = 2,
+        shape = bar_rect(),
+        point = awful.placement.centered,
         {
-            widget = wibox.container.margin,
-            margins = 3,
-            s.mytasklist_items
+            widget = wibox.container.place,
+            halign = "center",
+            valign = "center",
+            {
+                widget = wibox.container.margin,
+                margins = 3,
+                s.mytasklist_items
+            }
         }
     }
 
-    s.right_bar = {mykeyboardlayout, sinkindicator}
+    -- s.right_bar = {mykeyboardlayout, sinkindicator}
+    s.right_bar = {sinkindicator}
     for _, val in ipairs(bar_monitors) do
         table.insert(s.right_bar, val)
     end
+    table.insert(s.right_bar, mycalendar)
     table.insert(s.right_bar, mytextclock)
     table.insert(s.right_bar, wibox.widget.systray())
     table.insert(s.right_bar, s.mylayoutbox)
+
+    
+    s.left_bar = {
+        widget = wibox.container.background,
+        bg = constants.base,
+        shape = bar_rect(),
+        border_width = 2,
+        border_color = constants.blue,
+        point = awful.placement.left,
+        {
+            widget = wibox.container.margin,
+            margins = 5,
+            s.mytaglist,
+        }
+
+    }
+
+    s.right_bar = {
+        widget = wibox.container.background,
+        bg = constants.base,
+        shape = bar_rect(),
+        border_width = 2,
+        border_color = constants.blue,
+        point = awful.placement.right,
+        {
+            widget = wibox.container.margin,
+            margins = 5,
+            {
+                layout = wibox.layout.fixed.horizontal,
+                spacing = 5,
+                table.unpack(s.right_bar),
+            }
+        }
+    }
+
+    s.ww = wibox.layout {
+        layout = wibox.layout.manual
+    }
+
+    s.ww:add(s.left_bar)
+    s.ww:add(s.mytasklist)
+    s.ww:add(s.right_bar)
+
 
     -- Create the wibox
     s.mywibox = awful.wibar {
         position = "top",
         screen   = s,
-        border_color = constants.blue,
-        border_width = 2, 
+        -- border_color = constants.blue,
+        -- border_width = 2, 
+        bg = "transparent",
         margins = 9,
-        widget   = {
-            layout = wibox.layout.align.horizontal,
-            { -- Left widgets
-                layout = wibox.layout.fixed.horizontal,
-                mylauncher,
-                s.mytaglist,
-            },
-            s.mytasklist, -- Middle widget
-            { -- Right widgets
-                layout = wibox.layout.fixed.horizontal,
-                spacing = 5,
-                table.unpack(s.right_bar),
-            },
-        }
+        widget   = s.ww
     }
 end)
 

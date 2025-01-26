@@ -3,7 +3,7 @@ local wibox = require("wibox")
 local naughty = require("naughty")
 
 local constants = require("constants")
-local monitor = require("monitors").widget
+local monitor = require("bar_widgets").monitor
 
 local THRES_1 = 60 -- after this, the bar monitor turns yellow
 local THRES_2 = 80 -- after this, the bar monitor turns red
