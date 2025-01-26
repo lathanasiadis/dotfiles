@@ -73,14 +73,9 @@ local bat_monitor = nil
 local f = io.open(BAT_FILE, "r")
 if f ~= nil then
     io.close(f)
-    has_bat = true
-else
-    has_bat = false
-end
-
-if has_bat then
-    table.insert(ret, monitor(BAT_CMD, 10, "%",
-        gt_op, {40, 20}, {BAT_HIGH_ICON, BAT_MID_ICON, BAT_LOW_ICON}))
+    local battery = monitor(BAT_CMD, 10, "%",
+        gt_op, {40, 20}, {BAT_HIGH_ICON, BAT_MID_ICON, BAT_LOW_ICON})
+    table.insert(ret, battery)
 end
 
 return ret
