@@ -324,14 +324,12 @@ awful.keyboard.append_global_keybindings({
     ),
     awful.key({}, "XF86MonBrightnessUp",
         function ()
-            awful.spawn("", false)
-            snotifs.notif.brightness()
+            snotifs.notif.brightness("inc")
         end
     ),
     awful.key({}, "XF86MonBrightnessDown",
         function ()
-            awful.spawn("xbacklight -dec 10 -time 1 -steps 1", false)
-            snotifs.notif.brightness()
+            snotifs.notif.brightness("dec")
         end
     )
 })
